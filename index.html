@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StockTrader</title><meta name="description" content="StockTrader reports"><style>
+:root{--surface:#fcfcfb;--panel:#ffffff;--ink:#0b0b0b;--ink2:#52514e;--muted:#8a8984;--grid:#e6e5e1;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--good:#008300;--warn:#a86b00;--bad:#c62f2f;--border:#e6e5e1}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--surface:#1a1a19;--panel:#222221;--ink:#f0efec;
+--ink2:#c3c2b7;--muted:#8f8e86;--grid:#33332f;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--good:#0ca30c;--warn:#c98500;--bad:#e66767;--border:#33332f}}
+:root[data-theme=dark]{--surface:#1a1a19;--panel:#222221;--ink:#f0efec;--ink2:#c3c2b7;--muted:#8f8e86;--grid:#33332f;
+--s1:#3987e5;--s2:#d95926;--s3:#199e70;--good:#0ca30c;--warn:#c98500;--bad:#e66767;--border:#33332f}
+*{box-sizing:border-box}body{margin:0;background:var(--surface);color:var(--ink);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:1080px;margin:0 auto;padding:24px 16px 64px}h1{font-size:26px;margin:0 0 4px}h2{font-size:19px;margin:36px 0 10px}
+.sub{color:var(--ink2);margin:0 0 20px}.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.tile{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px}.tile .k{color:var(--ink2);font-size:13px}
+.tile .v{font-size:24px;font-weight:650;font-variant-numeric:tabular-nums}.note{background:var(--panel);border:1px solid var(--border);
+border-left:4px solid var(--warn);border-radius:8px;padding:12px 14px;margin:16px 0;color:var(--ink2)}
+.tbl{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--panel)}table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+th{color:var(--ink2);font-weight:600;position:sticky;top:0;background:var(--panel)}td:first-child,th:first-child{text-align:left}
+.badge{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid currentColor}
+.VALIDATED{color:var(--good)}.CANDIDATE{color:var(--warn)}.REJECTED{color:var(--muted)}
+.chart{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px;position:relative}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink2);margin:0 0 6px}.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12.5px;
+box-shadow:0 4px 14px rgba(0,0,0,.12);display:none;white-space:nowrap}footer{margin-top:40px;color:var(--muted);font-size:13px}
+a{color:var(--s1)}code{font-size:12.5px}
+</style></head>
+<body><main><h1>StockTrader</h1><p class="sub">Evidence-driven NSE screener and ₹1L paper-trading loop.</p>
+<h2>Reports</h2><ul><li><a href="evidence/v1.html">Evidence report v1</a></li></ul><footer>Paper trading research only. Not investment advice. No real money is traded.
+Generated 2026-11-17 17:12 UTC by StockTrader.</footer></main><script>
+document.querySelectorAll('.chart[data-series]').forEach(function(box){
+ var d=JSON.parse(box.dataset.series),svg=box.querySelector('svg'),tip=box.querySelector('.tip'),cross=svg.querySelector('.cross');
+ var x0=+svg.dataset.x0,x1=+svg.dataset.x1,n=d.dates.length;
+ svg.addEventListener('mousemove',function(e){var r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal,
+  px=(e.clientX-r.left)*vb.width/r.width;if(px<x0||px>x1){tip.style.display='none';cross.setAttribute('opacity',0);return}
+  var i=Math.round((px-x0)/(x1-x0)*(n-1));var cx=x0+(x1-x0)*i/(n-1);cross.setAttribute('x1',cx);cross.setAttribute('x2',cx);cross.setAttribute('opacity',1);
+  var h='<b>'+d.dates[i]+'</b>';d.series.forEach(function(s){h+='<br><i style="display:inline-block;width:10px;height:3px;background:'+s.color+';vertical-align:middle;margin-right:6px"></i>'+s.name+': ₹'+Math.round(s.values[i]).toLocaleString('en-IN')});
+  tip.innerHTML=h;tip.style.display='block';var bx=box.getBoundingClientRect();var left=e.clientX-bx.left+14;if(left>bx.width-220)left-=240;tip.style.left=left+'px';tip.style.top=(e.clientY-bx.top-10)+'px'});
+ svg.addEventListener('mouseleave',function(){tip.style.display='none';cross.setAttribute('opacity',0)});
+});
+</script></body></html>
