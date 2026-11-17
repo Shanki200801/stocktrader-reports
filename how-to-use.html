@@ -1,0 +1,75 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to use StockTrader</title><meta name="description" content="Plain-language guide"><style>
+:root{--surface:#fcfcfb;--panel:#ffffff;--ink:#0b0b0b;--ink2:#52514e;--muted:#8a8984;--grid:#e6e5e1;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--good:#008300;--warn:#a86b00;--bad:#c62f2f;--border:#e6e5e1}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--surface:#1a1a19;--panel:#222221;--ink:#f0efec;
+--ink2:#c3c2b7;--muted:#8f8e86;--grid:#33332f;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--good:#0ca30c;--warn:#c98500;--bad:#e66767;--border:#33332f}}
+:root[data-theme=dark]{--surface:#1a1a19;--panel:#222221;--ink:#f0efec;--ink2:#c3c2b7;--muted:#8f8e86;--grid:#33332f;
+--s1:#3987e5;--s2:#d95926;--s3:#199e70;--good:#0ca30c;--warn:#c98500;--bad:#e66767;--border:#33332f}
+*{box-sizing:border-box}body{margin:0;background:var(--surface);color:var(--ink);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:1080px;margin:0 auto;padding:24px 16px 64px}h1{font-size:26px;margin:0 0 4px}h2{font-size:19px;margin:36px 0 10px}
+.sub{color:var(--ink2);margin:0 0 20px}.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.tile{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px}.tile .k{color:var(--ink2);font-size:13px}
+.tile .v{font-size:24px;font-weight:650;font-variant-numeric:tabular-nums}.note{background:var(--panel);border:1px solid var(--border);
+border-left:4px solid var(--warn);border-radius:8px;padding:12px 14px;margin:16px 0;color:var(--ink2)}
+.tbl{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--panel)}table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+th{color:var(--ink2);font-weight:600;position:sticky;top:0;background:var(--panel)}td:first-child,th:first-child{text-align:left}
+.badge{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid currentColor}
+.VALIDATED{color:var(--good)}.CANDIDATE{color:var(--warn)}.REJECTED{color:var(--muted)}
+.chart{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px;position:relative}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink2);margin:0 0 6px}.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12.5px;
+box-shadow:0 4px 14px rgba(0,0,0,.12);display:none;white-space:nowrap}footer{margin-top:40px;color:var(--muted);font-size:13px}
+a{color:var(--s1)}code{font-size:12.5px}
+</style></head>
+<body><main><h1>How to use this report</h1>
+<p class="sub"><a href="index.html">Daily brief</a> · <a href="archive.html">Archive</a></p>
+<div class="note">This is paper-trading research, not investment advice. No money is traded, and nothing here promises any return.</div>
+<h2>What each page shows</h2>
+<ul><li><b>Daily brief</b>: the paper book (₹1,00,000 start) and shadow books, NAV versus the Nifty 500, holdings, recent orders, live prediction tracker, positions history, data checks and news on held names.</li>
+<li><b>Screen</b>: the formula-ranked list of Nifty 500 stocks per momentum method, with every input shown.</li>
+<li><b>Archive</b>: every past report date with links.</li>
+<li><b>Evidence</b>: backtests of each method on past data, after Indian trading costs.</li></ul>
+<h2>Statuses</h2>
+<ul><li><b>CANDIDATE</b>: passed part of the backtest gates; being watched live. Not proven.</li>
+<li><b>REJECTED</b>: failed the backtest gates; shown for transparency.</li>
+<li><b>INSUFFICIENT_DATA</b>: too little history to judge.</li>
+<li><b>DEMOTED</b>: live results stayed below the backtest band for 3 consecutive monthly reviews.</li>
+<li><b>HALTED</b>: the book's strategy was demoted and the book moved to cash. Choosing a replacement is a human decision.</li></ul>
+<h2>How to read the screen</h2>
+<ul><li><b>NMS</b> (momentum score): higher means stronger risk-adjusted 6- and 12-month momentum compared with the rest of the universe.</li>
+<li><b>trend_ok</b>: the price is above its 200-day average and the 50-day is above the 200-day. Failing names are dropped by the "+T" variants.</li>
+<li><b>Regime</b>: ON when the Nifty 500 is above its 200-day average. When OFF, "+T" variants hold cash.</li></ul>
+<h2>How the paper book decides</h2>
+<ul><li>Once a month (month-end) rank the eligible universe and target the top 8, equal weight.</li>
+<li>Hold buffer: a stock already held is kept while its rank is 16 or better, which cuts churn.</li>
+<li>Whole shares only; orders fill at the next trading day's open; full Indian costs (brokerage-free delivery taxes and charges, exchange fees, slippage) are charged.</li></ul>
+<h2>How to judge whether it is working</h2>
+<ul><li>Look at the <b>matured</b> table: hit rate (share of picks that beat the equal-weight universe) and mean excess, against the backtest expectation beside it. Results inside the backtest band are normal; persistent results below it lead to demotion.</li>
+<li>The <b>interim</b> tracker for open predictions is noise until the horizon (63 or 126 trading days) is reached. Do not act on it.</li>
+<li>Small numbers of matured predictions prove little; 12 or more monthly signal dates are needed before any promotion.</li></ul>
+<h2>Risks</h2>
+<ul><li>The backtest maximum drawdown was about -67%. Momentum can fall sharply and for long periods, and it can crash when markets reverse.</li>
+<li>Backtests have limits: survivorship in the universe, data errors, costs and liquidity assumptions, and the fact that past patterns can stop working.</li>
+<li>On small accounts, fixed charges and slippage take a larger share of returns; whole-share rounding leaves some cash idle.</li></ul>
+<h2>If you use this to inform real decisions</h2>
+<ul><li>It is paper research, not advice, and makes no promise of returns.</li>
+<li>Wait for live evidence first: at least 6 to 12 months of matured predictions before trusting it.</li>
+<li>If you follow it at all, follow the rules systematically rather than cherry-picking names you like.</li>
+<li>Size positions so a large loss is tolerable; never risk more than you can afford to lose.</li>
+<li>Respect the news review flags on holdings before acting.</li>
+<li>Costs and taxes matter (as commonly stated: short-term gains 20%, long-term gains 12.5% above ₹1.25 lakh; <i>verify current rules</i>).</li>
+<li>For personal decisions, consult a SEBI-registered investment adviser.</li></ul><footer>Paper trading research only. Not investment advice. No real money is traded.
+Generated 2026-11-17 18:58 UTC by StockTrader.</footer></main><script>
+document.querySelectorAll('.chart[data-series]').forEach(function(box){
+ var d=JSON.parse(box.dataset.series),svg=box.querySelector('svg'),tip=box.querySelector('.tip'),cross=svg.querySelector('.cross');
+ var x0=+svg.dataset.x0,x1=+svg.dataset.x1,n=d.dates.length;
+ svg.addEventListener('mousemove',function(e){var r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal,
+  px=(e.clientX-r.left)*vb.width/r.width;if(px<x0||px>x1){tip.style.display='none';cross.setAttribute('opacity',0);return}
+  var i=Math.round((px-x0)/(x1-x0)*(n-1));var cx=x0+(x1-x0)*i/(n-1);cross.setAttribute('x1',cx);cross.setAttribute('x2',cx);cross.setAttribute('opacity',1);
+  var h='<b>'+d.dates[i]+'</b>';d.series.forEach(function(s){h+='<br><i style="display:inline-block;width:10px;height:3px;background:'+s.color+';vertical-align:middle;margin-right:6px"></i>'+s.name+': ₹'+Math.round(s.values[i]).toLocaleString('en-IN')});
+  tip.innerHTML=h;tip.style.display='block';var bx=box.getBoundingClientRect();var left=e.clientX-bx.left+14;if(left>bx.width-220)left-=240;tip.style.left=left+'px';tip.style.top=(e.clientY-bx.top-10)+'px'});
+ svg.addEventListener('mouseleave',function(){tip.style.display='none';cross.setAttribute('opacity',0)});
+});
+</script></body></html>
